@@ -2,9 +2,15 @@
 Template para automatizar análise estrutural de treliças metálicas no ambiente Grasshopper + Karamba 3D
 
 
+## Sobre
+
 Neste repositório você encontrará um template escrito em Python para automatizar projetos de treliças metálicas constituídas de barras tubulares, de acordo com a norma brasileira [NBR8800](https://www.abntcatalogo.com.br/norma.aspx?ID=1459).
 
+## Objetivo
+
 O objetivo principal deste template é servir de ferramenta computacional para disseminar a utilização de scripts para solucionar problemas, ou ainda, automatizar tarefas entre arquitetos e engenheiros projetistas, assim como auxiliar o aprendizado de estudantes de estruturas metálicas.
+
+# Estrutura 
 
 Dividos em três partes (blocos A, B e C), o template funciona da seguinte maneira:
 
@@ -14,7 +20,7 @@ Dividos em três partes (blocos A, B e C), o template funciona da seguinte manei
 
 3. bloco C - verifica as condições de seguranças exigidas pela NBR8800, ou seja, se a solicitação máxima de cada perfil escolhido é menor ou igual sua resistência máxima. 
 
-Como exemplo, veremos um caso de uma treliça espacial plana (imagem abaixo),  constituída por três diferentes seções (banzo superior, banzo superior e diagonal) e desenvolvida no ambiente rhinoceros + karamba. 
+Como exemplo, veremos um caso de uma treliça espacial plana (imagem abaixo) genérica,  constituída por três diferentes seções (banzo superior, banzo superior e diagonal) e desenvolvida no ambiente rhinoceros + karamba. 
 
 
 ![](images/truss_diagram.jpg)
@@ -22,7 +28,7 @@ Como exemplo, veremos um caso de uma treliça espacial plana (imagem abaixo),  c
 
 ## Exemplo de aplicação
 
-Neste exemplo, foram utilizados os seguintes add-on para Grasshopper 3d:
+Neste exemplo, foram utilizados os seguintes *add-on* para Grasshopper 3d:
 
 1. [karamba 3d](https://www.food4rhino.com/app/karamba3d) - aplicativo para análise estrutural; 
 
@@ -76,16 +82,16 @@ Atenção para o formato da saída deste bloco. Uma lista ordenada da seguinte m
 
 
 
-Estas saídas devem ser ligadas aos nós *cross-sections* karamba.
+Estas saídas devem ser ligadas aos nós *cross-sections* karamba respeitando a ordem de montagem do modelo estrutural.
 
 
 ![](images/6_perfis_karamba.gif)
 
 #### Bloco B
 
-As mesmas saídas ligas ao Karamba também precisam ser ligadas as entradas (diâmetro e espessura) do bloco B. Isso porque, este bloco é que irá calcular a resistência máxima de cada seção escolhida no bloco anterior.
+As mesmas saídas ligas ao Karamba também precisam ser ligadas as entradas (componentes *merge* diâmetros e espessuras) do bloco B. Isso porque, este bloco é responsávl por calcular as resistências máximas de cada seção escolhida no bloco anterior.
 
-obs. Inputs do bloco B
+Atenção para os inputs do bloco B. 
 
 ```
     INPUTS:
@@ -97,14 +103,13 @@ obs. Inputs do bloco B
 
 ```
 
-
 ![](images/7_perfis_caminho.gif)
 
-Veja só os resultados na saída do bloco.
+Veja só o output deste nó. Os resultados das resistências máximas para cada seção devidamente calculados.
 
 ![](images/8_res_max.gif)
 
-obs. Outputs do bloco B
+Cuidado com a saída. Os outputs do bloco B são dois, um meramente visual com a intenção de nós auxiliar no processo e outro com os dados, uma lista de valores que deverão ser enviados adiante. 
 
 ```
     OUTPUTS:
@@ -114,9 +119,11 @@ obs. Outputs do bloco B
 
 #### Bloco C
 
-Por fim, precisamos alimentar o último bloco do template. Ele será o responsável por acusar quais seções atendem a exigência da norma descrita anteiormente.
+Por fim, precisamos alimentar o último bloco do template. Ele será responsável por acusar quais seções atendem a exigência da norma descrita anteiormente. A seção aprovada receberá o 'OK', já a reprovada, 'NOT OK'.
 
-obs. Inputs do bloco C
+Para isso, buscamos as solicitações de todas as barras diferentamente nos nós *b-res-force* karamba.
+
+Então, novamente atenção para os inputs do bloco C
 
 ```
     INPUTS:
@@ -127,15 +134,13 @@ obs. Inputs do bloco C
               dois ou n perfis : List access --> type: float
 ```
 
-Para isso, buscamos as solicitações de todas as barras diferentamente nos nós *b-res-force* karamba.
-
 ![](images/9_solic_karamba.gif)
 
 Em seguidas, precisamos informar quantas barras têm no modelo (número de barras no banzo superior, inferior e diagonal).
 
 ![](images/10_num_barras.gif)
 
-Pronto. Agora é só experimentar quais seções atende nosso projeto.
+Pronto. Agora é só experimentar as seções contidas no arquivo .csv e ver quais atendem nosso projeto.
 
 ![](images/11_analise_final.gif)
 
@@ -143,13 +148,13 @@ obs. Output do bloco C
 
 ```
     OUTPUTS:
-        out  --> informações visuais (OK ou não OK)
+        out  --> informações visuais (OK ou NOT OK)
         a --> none
 ```
 
 ### Atenção
 
-É claro que está é uma análise preliminar e não atende todas as exigências contidas na NBR8800. Mas, com certeza é uma boa maneira de evitar desperdício de tempo recalculando tração e compressão dezena de vezes durante o projeto. 
+É claro que está é uma análise preliminar e não atende todas as exigências contidas na NBR8800. Mas, com certeza é uma boa maneira de evitar desperdício de tempo recalculando tração e compressão dezenas de vezes durante o projeto. 
 
 
 ### Gostou?
